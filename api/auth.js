@@ -10,7 +10,7 @@ module.exports = app => {
         if(!user) {
             app.db('users')
                 .insert(user)
-                .then( _ => res.status(201).send())
+                .then( _ => res.status(200).send())
                 .catch( err => res.status(400).status( err ))
 
             //return res.status(400).send("Usuario nao encontrado!")

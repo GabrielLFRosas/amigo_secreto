@@ -25,6 +25,12 @@
             }
         }
         
-        return {save}
+        const getGroupsByUser = (req, res) => {
+            app.db('groups')
+                .join('users', 'groups.id', 'users.group_id')
+                .where({email})
+        }
+
+        return {save, getGroupsByUser}
 
     }
