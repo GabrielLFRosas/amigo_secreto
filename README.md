@@ -18,5 +18,5 @@ PASSOS PARA RODAR A APLICACAO
 
 1 -> Rodar o comando "docker-compose up -d", para subir a base de dados
 
-2 -> para rodar as migracoes rode o comando "knex migrate:latest"
+2 -> Para rodar as migracoes rode o comando "knex migrate:latest"
 
