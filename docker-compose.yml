@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: amigo_secreto
+    ports:
+      - "15432:5432"
+    volumes:
+      - $HOME/database/postgres:/var/lib/postgresql/data
+    networks:
+      - gabriel_rosas_network
+      
+  teste-pgadmin-compose:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
+    networks:
+      - gabriel_rosas_network
+
+networks: 
+  gabriel_rosas_network:
+    driver: bridge
