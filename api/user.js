@@ -1,53 +1,58 @@
 module.exports = app => {
-  const {exitsOrError, notExistsOrError } = app.api.validation
+  const {exitsOrError} = app.api.validation
 
-  const save = async(req, res) => {
+  const createUser = async(req, res) => {
     const user = { ...req.body }    
-    if(req.params.id) user.id = req.params.id
-
     try{
       exitsOrError(user.name, "Nome nao informado")
       exitsOrError(user.email, "E-mail nao informado")
 
-      const userFromDB = await app.db('users')
-                                  .where({ email: user.email }).first()
-      if(user.id){
-        notExistsOrError(userFromDB, "Usuario ja cadastrado")
+      // Valida se ja existe um usuario com o email cadastrado
+      const userAlreadyExists = await app.persistence.user_repository.getByEmail(user.email);
+ 
+      if (userAlreadyExists) {
+        res.status(400).send("Usuario ja cadastrado")
       }
-    } catch(msg) {
-        return res.status(400).send(msg)
-    }
 
-    if(user.id){
-      app.db('users')
-          .update(user)
-          .where({ id: user.id })
-          .then(_ => res.status(204).send())
-          .catch(err => res.status(500).send(err))
-    } else {
-      app.db('users')
-        .insert(user)
-        .then(_ => res.status(204).send())
-        .catch(err => res.status(500).send(err))
+      const createdUser = await app.persistence.user_repository.insert(user);
+
+      res.status(200).send(createdUser);
+    }
+    catch {
+      return res.status(500).send()
     }
   }
 
-  const get = (req, res) => {
-    app.db('users')
-        .select('id', 'name', 'email', 'group_id', 'friend_id',  'is_admin')
-        .then(users => res.json(users))
-        .catch(err => res.status(500).send(err))
+  const deleteUser = async(req, res) => {
+    req.params.id = parseInt(req.params.id)
+
+    try{
+      app.persistence.user_repository.deleteUser(req.params.id);
+
+      res.status(204).send();
+    }
+    catch {
+      return res.status(500).send()
+    }
   }
 
-  const getById = (req, res) => {
-    app.db('users')
-        .select('id', 'name', 'email', 'group_id', 'friend_id',  'is_admin')
-        .where({ id: req.params.id })
-        .first()
-        .then(users => res.json(users))
-        .catch(err => res.status(500).send(err))
+  const updateUser = async(req, res) => {
+    let user = { ...req.body }
+    user.id = parseInt(req.params.id)
+
+    try {
+      if (!(user.name || user.email)) {
+        res.status(400).send("Campos nao informados para update")
+      }
+    
+      const response = await app.persistence.user_repository.update(user);
+
+      return res.status(200).send(response);
+    }
+    catch {
+      return res.status(500).send()
+    }
   }
 
-
-  return { save, get, getById }
+  return { createUser, deleteUser, updateUser }
 }
