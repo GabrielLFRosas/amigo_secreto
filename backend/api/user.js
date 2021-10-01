@@ -7,18 +7,23 @@ module.exports = app => {
       exitsOrError(user.name, "Nome nao informado")
       exitsOrError(user.email, "E-mail nao informado")
 
+      console.log("CREATE")
       // Valida se ja existe um usuario com o email cadastrado
       const userAlreadyExists = await app.persistence.user_repository.getByEmail(user.email);
  
       if (userAlreadyExists) {
+        console.log("400")
+
         res.status(400).send("Usuario ja cadastrado")
       }
-
-      const createdUser = await app.persistence.user_repository.insert(user);
-
+      console.log("aqui sim")
+      const createdUser = app.persistence.user_repository.insert(user);
+      console.log("aqui nao")
       res.status(200).send(createdUser);
+      console.log("200")
     }
-    catch {
+    catch(error) {
+      console.log("500")
       return res.status(500).send()
     }
   }
