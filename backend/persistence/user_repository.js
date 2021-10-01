@@ -13,8 +13,13 @@ module.exports = app => {
             .into("users")
             .returning(['id', 'name', 'email'])
             .then(rows => {
+                console.log(user.email)
                 return rows[0];
-            });
+            })
+            .catch(err => {
+                console.log(user.email)
+            })
+            
     }
 
     async function update(user) {
@@ -24,7 +29,8 @@ module.exports = app => {
             .returning(['id', 'name', 'email'])
             .then(rows => {
                 return rows[0];
-            });
+            })
+            .catch()
     }
 
     async function listAllUsers() {

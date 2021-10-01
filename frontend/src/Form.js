@@ -1,29 +1,27 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useState } from "react";
 import api from './services/api'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function Form() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
+  
+    function handleSubmit(e) {
+        e.preventDefault()
+        api.post('/users', { name, email })
+    }
 
-    useEffect(() => {
-        api
-            .post("/users",{
-                name: name,
-                email: email
-            })
-            .then((response) => createUser(response.data))
-            .catch((err) => {
-                console.error("ops! ocorreu um erro!" + err)
-            })
-    }, [])
+    function drawFriends(){
+        api.post('/draws', { })
+    }
 
     return(
         <div className="row">
             <div className="d-flex justify-content-center ">
-                <form>
+                <form onSubmit={ e => handleSubmit(e)}>
                     <div className="form-group mt-2 mb-3">
-                        <label for="inputname">Nome do Amigo</label>
+                        <label htmlFor="inputname">Nome do Amigo</label>
                         <input
                             name="name"
                             className="form-control"
@@ -34,7 +32,7 @@ function Form() {
                         />                      
                     </div>
                     <div className="form-group">
-                        <label for="inputEmail">E-mail do Amigo</label>
+                        <label htmlFor="inputEmail">E-mail do Amigo</label>
                         <input
                             name="email"
                             className="form-control"
@@ -44,11 +42,14 @@ function Form() {
                             onChange={event => setEmail(event.target.value)}
                         />                        
                     </div>
+                    <div className="d-flex justify-content-center mt-4">
+                        <button className="btn btn-primary mr-4" type="submit"> Novo Amigo </button>
+                        <button className="btn btn-success" style={{marginLeft: '1.4rem'}} onClick={drawFriends}> Sortear </button>
+                    </div>
+
                 </form>
             </div>
-            <div className="d-flex justify-content-center mt-4">
-                <div className="btn btn-primary" onClick={event => setFriend(name, email)}> Novo Amigo </div>
-            </div>
+
         </div>
     )
 }
