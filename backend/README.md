@@ -6,6 +6,7 @@ DOCKER COMPOSE -> 1.29.2
 
 
 # PASSOS PARA RODAR A APLICACAO
+    para iniciar o projeto, rodar "npm install"
     # backend
         (NA PASTA BACKEND EXECUTAR)
         1 -> Rodar o comando "docker-compose up -d", para subir a base de dados
