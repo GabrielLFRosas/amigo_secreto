@@ -7,23 +7,19 @@ module.exports = app => {
       exitsOrError(user.name, "Nome nao informado")
       exitsOrError(user.email, "E-mail nao informado")
 
-      console.log("CREATE")
       // Valida se ja existe um usuario com o email cadastrado
       const userAlreadyExists = await app.persistence.user_repository.getByEmail(user.email);
  
       if (userAlreadyExists) {
-        console.log("400")
-
         res.status(400).send("Usuario ja cadastrado")
       }
-      console.log("aqui sim")
+      
       const createdUser = app.persistence.user_repository.insert(user);
-      console.log("aqui nao")
       res.status(200).send(createdUser);
-      console.log("200")
     }
-    catch(error) {
-      console.log("500")
+    catch(err) {
+      console.log(err)
+
       return res.status(500).send()
     }
   }
@@ -36,7 +32,9 @@ module.exports = app => {
 
       res.status(204).send();
     }
-    catch {
+    catch(err) {
+      console.log(err)
+
       return res.status(500).send()
     }
   }
@@ -54,10 +52,25 @@ module.exports = app => {
 
       return res.status(200).send(response);
     }
-    catch {
+    catch(err) {
+      console.log(err)
+
       return res.status(500).send()
     }
   }
 
-  return { createUser, deleteUser, updateUser }
+  const listUsers = async(req, res) => {
+    
+    try {
+      const list = await app.persistence.user_repository.listUsers();
+      return res.status(200).send(list);
+    }
+    catch(err) {
+      console.log(err)
+      
+      return res.status(500).send()
+    }
+  }
+
+  return { createUser, deleteUser, updateUser, listUsers }
 }

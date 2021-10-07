@@ -33,10 +33,9 @@ module.exports = app => {
             .catch()
     }
 
-    async function listAllUsers() {
-        return await app.db
-            .select('*')
-            .from('users');
+    async function listUsers() {
+        return await app.db('users')
+            .select('id', 'name', 'email', 'friend_id')
     }
 
     async function deleteUser(id) {
@@ -44,6 +43,7 @@ module.exports = app => {
             .where({ id: id})
             .delete();
     }
+
     
-    return {getByEmail, insert, listAllUsers, update, deleteUser}
+    return {getByEmail, insert, listUsers, update, deleteUser}
 }

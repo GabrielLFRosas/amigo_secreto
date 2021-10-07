@@ -2,7 +2,7 @@
 module.exports = app => {
   const draw = async(_, res) => {
     try{
-        const users = await app.persistence.user_repository.listAllUsers();
+        const users = await app.persistence.user_repository.listUsers();
       
         if (!users) {
           res.status(400).send("Nao existem usuarios cadastrados")
@@ -30,7 +30,9 @@ module.exports = app => {
       
       return res.status(200).send()
     }
-    catch {
+    catch(err) {
+      console.log(err)
+
       return res.status(500).send("Falhou")
     }
   }
